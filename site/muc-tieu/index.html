@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kế hoạch tiết kiệm theo mục tiêu — mỗi tháng cần để dành bao nhiêu | TínhTiền</title>
+  <meta name="description" content="Nhập số tiền mục tiêu và thời hạn để biết mỗi tháng cần để dành bao nhiêu, kèm biểu đồ lộ trình theo từng năm.">
+  <meta property="og:title" content="Kế hoạch tiết kiệm theo mục tiêu — mỗi tháng cần để dành bao nhiêu | TínhTiền">
+  <meta property="og:description" content="Nhập số tiền mục tiêu và thời hạn để biết mỗi tháng cần để dành bao nhiêu, kèm biểu đồ lộ trình theo từng năm.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="vi_VN">
+  <meta name="theme-color" content="#0b7a4b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <script src="../assets/prefs.js"></script>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-tool="goal">
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="../">Tính<span>Tiền</span></a>
+      <nav class="main" aria-label="Công cụ">
+        <a href="../vay-tra-gop/">Vay trả góp</a>
+        <a href="../kha-nang-vay/">Khả năng vay</a>
+        <a href="../lai-tiet-kiem/">Lãi tiết kiệm</a>
+        <a href="../lai-kep/">Lãi kép</a>
+        <a href="../muc-tieu/" aria-current="page">Mục tiêu</a>
+      </nav>
+      <details class="prefs">
+        <summary>Tuỳ chỉnh</summary>
+        <div class="panel">
+          <fieldset>
+            <legend>Giao diện</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="auto"><span>Tự động</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="light"><span>Sáng</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="dark"><span>Tối</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Màu chủ đạo</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="green"><span><i class="dot green"></i>Xanh lá</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="blue"><span><i class="dot blue"></i>Xanh dương</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="purple"><span><i class="dot purple"></i>Tím</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="orange"><span><i class="dot orange"></i>Cam</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Cỡ chữ</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-size" data-pref="size" value="normal"><span>Vừa</span></label>
+              <label><input type="radio" name="pref-size" data-pref="size" value="large"><span>Lớn</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </details>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <h1>Mỗi tháng cần để dành bao nhiêu?</h1>
+      <p class="lead">Đặt một mục tiêu cụ thể — mua xe, quỹ dự phòng, học phí cho con — và xem số tiền cần góp mỗi tháng để tới đích đúng hạn.</p>
+      <div class="chips">
+        <span class="label">Ví dụ nhanh:</span>
+        <button type="button" class="chip" data-preset="{&quot;target&quot;:&quot;100000000&quot;,&quot;initial&quot;:&quot;&quot;,&quot;rate&quot;:&quot;5&quot;,&quot;years&quot;:&quot;2&quot;}">Quỹ dự phòng 100 triệu · 2 năm</button>
+        <button type="button" class="chip" data-preset="{&quot;target&quot;:&quot;600000000&quot;,&quot;initial&quot;:&quot;50000000&quot;,&quot;rate&quot;:&quot;6&quot;,&quot;years&quot;:&quot;5&quot;}">Mua xe 600 triệu · 5 năm</button>
+        <button type="button" class="chip" data-preset="{&quot;target&quot;:&quot;2000000000&quot;,&quot;initial&quot;:&quot;100000000&quot;,&quot;rate&quot;:&quot;8&quot;,&quot;years&quot;:&quot;15&quot;}">Học phí cho con 2 tỷ · 15 năm</button>
+      </div>
+      <form class="card" id="tool-form" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label for="target">Số tiền mục tiêu (đ)</label>
+            <input type="text" id="target" name="target" inputmode="numeric" autocomplete="off" data-money value="1000000000">
+          </div>
+          <div class="field">
+            <label for="initial">Số tiền đang có (đ)</label>
+            <input type="text" id="initial" name="initial" inputmode="numeric" autocomplete="off" data-money value="">
+            <div class="hint">Không bắt buộc</div>
+          </div>
+          <div class="field">
+            <label for="rate">Lãi suất kỳ vọng (%/năm)</label>
+            <input type="text" id="rate" name="rate" inputmode="decimal" autocomplete="off" value="7">
+          </div>
+          <div class="field">
+            <label for="years">Thời hạn (năm)</label>
+            <input type="text" id="years" name="years" inputmode="numeric" autocomplete="off" value="10">
+            <div class="hint">Từ 1 đến 60 năm</div>
+          </div>
+        </div>
+        <button class="primary" type="submit">Lập kế hoạch</button>
+      </form>
+      <p class="error" id="error" role="alert"></p>
+      <div class="result" id="result" aria-live="polite" hidden></div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" class="ghost" id="copy-link">Sao chép liên kết</button>
+        <button type="button" class="ghost" id="download-csv">Tải bảng (CSV)</button>
+        <button type="button" class="ghost" id="print">In kết quả</button>
+        <span class="note" id="action-note" role="status"></span>
+      </div>
+      <section class="card saved" id="saved">
+        <h2>Kịch bản của bạn</h2>
+        <form class="save-row" id="save-form">
+          <input type="text" id="save-name" maxlength="40" autocomplete="off" aria-label="Tên kịch bản" placeholder="Đặt tên, ví dụ: Phương án ngân hàng A">
+          <button class="primary" type="submit">Lưu phép tính này</button>
+        </form>
+        <p class="empty" id="saved-empty">Lưu lại các phương án để so sánh sau. Dữ liệu chỉ nằm trên thiết bị này của bạn.</p>
+        <ul id="saved-list"></ul>
+      </section>
+      <div class="offers" id="offers" hidden></div>
+      <section class="prose">
+        <h2>Cách tính</h2>
+        <p>Công cụ tìm số tiền góp cuối mỗi tháng nhỏ nhất sao cho, với lãi ghép hàng tháng, tổng giá trị sau thời hạn đạt mục tiêu: <code>C = (T − P × (1 + i)<sup>n</sup>) × i ÷ ((1 + i)<sup>n</sup> − 1)</code>, với T là mục tiêu, P là số tiền đang có, i là lãi suất tháng, n là số tháng.</p>
+        <p>Lãi suất giả định không đổi và chưa tính lạm phát; với mục tiêu dài hạn, hãy cân nhắc đặt mục tiêu cao hơn để bù trượt giá.</p>
+      </section>
+    </div>
+  </main>
+  <footer class="site">
+    <div class="wrap">
+      <p>Kết quả chỉ mang tính tham khảo, không phải tư vấn tài chính. Số liệu thực tế tuỳ thuộc hợp đồng với ngân hàng hoặc tổ chức tín dụng của bạn.</p>
+      <p><a href="../chinh-sach/">Chính sách quyền riêng tư</a></p>
+    </div>
+  </footer>
+  <script src="../assets/config.js"></script>
+  <script src="../assets/calc.js"></script>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TínhTiền — Công cụ tính lãi vay, lãi tiết kiệm, lãi kép miễn phí</title>
-  <meta name="description" content="Bộ công cụ tài chính cá nhân miễn phí: tính lịch trả góp, lãi tiết kiệm và lãi kép. Nhanh, chính xác, không cần đăng ký.">
-  <meta property="og:title" content="TínhTiền — Công cụ tính lãi vay, lãi tiết kiệm, lãi kép miễn phí">
-  <meta property="og:description" content="Bộ công cụ tài chính cá nhân miễn phí: tính lịch trả góp, lãi tiết kiệm và lãi kép. Nhanh, chính xác, không cần đăng ký.">
+  <title>TínhTiền — Tính lãi vay, khả năng vay, lãi tiết kiệm, lãi kép miễn phí</title>
+  <meta name="description" content="Bộ công cụ tài chính cá nhân miễn phí: lịch trả góp, khả năng vay theo thu nhập, lãi tiết kiệm, lãi kép và kế hoạch đạt mục tiêu. Có biểu đồ, lưu kịch bản, không cần đăng ký.">
+  <meta property="og:title" content="TínhTiền — Tính lãi vay, khả năng vay, lãi tiết kiệm, lãi kép miễn phí">
+  <meta property="og:description" content="Bộ công cụ tài chính cá nhân miễn phí: lịch trả góp, khả năng vay theo thu nhập, lãi tiết kiệm, lãi kép và kế hoạch đạt mục tiêu. Có biểu đồ, lưu kịch bản, không cần đăng ký.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="vi_VN">
+  <meta name="theme-color" content="#0b7a4b">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <script src="./assets/prefs.js"></script>
   <link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
@@ -18,20 +20,68 @@
       <a class="brand" href="./">Tính<span>Tiền</span></a>
       <nav class="main" aria-label="Công cụ">
         <a href="./vay-tra-gop/">Vay trả góp</a>
+        <a href="./kha-nang-vay/">Khả năng vay</a>
         <a href="./lai-tiet-kiem/">Lãi tiết kiệm</a>
         <a href="./lai-kep/">Lãi kép</a>
+        <a href="./muc-tieu/">Mục tiêu</a>
       </nav>
+      <details class="prefs">
+        <summary>Tuỳ chỉnh</summary>
+        <div class="panel">
+          <fieldset>
+            <legend>Giao diện</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="auto"><span>Tự động</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="light"><span>Sáng</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="dark"><span>Tối</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Màu chủ đạo</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="green"><span><i class="dot green"></i>Xanh lá</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="blue"><span><i class="dot blue"></i>Xanh dương</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="purple"><span><i class="dot purple"></i>Tím</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="orange"><span><i class="dot orange"></i>Cam</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Cỡ chữ</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-size" data-pref="size" value="normal"><span>Vừa</span></label>
+              <label><input type="radio" name="pref-size" data-pref="size" value="large"><span>Lớn</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </details>
     </div>
   </header>
   <main>
     <div class="wrap">
-      <h1>Tính toán tài chính cá nhân, nhanh và miễn phí</h1>
-      <p class="lead">Ba công cụ gọn nhẹ giúp bạn ước tính khoản vay, tiền lãi gửi tiết kiệm và sức mạnh của lãi kép. Không cần đăng ký, mọi phép tính chạy ngay trên máy của bạn.</p>
-      <div class="tools">
-        <a class="card tool" href="./vay-tra-gop/"><h2>Vay trả góp</h2><p>Lịch trả nợ từng tháng theo dư nợ giảm dần hoặc trả đều, kèm tổng lãi phải trả.</p></a>
-        <a class="card tool" href="./lai-tiet-kiem/"><h2>Lãi tiết kiệm</h2><p>Tiền lãi nhận được cuối kỳ theo số tiền gửi, lãi suất và kỳ hạn.</p></a>
-        <a class="card tool" href="./lai-kep/"><h2>Lãi kép</h2><p>Tài sản tăng trưởng thế nào khi đầu tư đều đặn hàng tháng trong nhiều năm.</p></a>
+      <section class="hero">
+        <h1>Mọi quyết định về tiền, <em>tính rõ trong vài giây</em></h1>
+        <p class="lead">Chọn đúng việc bạn đang cần — công cụ sẽ mở sẵn với số liệu ví dụ để bạn chỉnh theo hoàn cảnh của mình. Không đăng ký, không thu thập dữ liệu.</p>
+      </section>
+      <h2>Bạn đang cần gì?</h2>
+      <div class="needs">
+        <a class="card need" href="./kha-nang-vay/"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></span><span><strong>Tôi muốn mua nhà</strong><small>Với thu nhập hiện tại, bạn vay được tối đa bao nhiêu?</small></span></a>
+        <a class="card need" href="./vay-tra-gop/?principal=600000000&amp;rate=8,5&amp;months=84&amp;method=annuity"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16l1.5-5.5A2 2 0 0 1 8.4 9h7.2a2 2 0 0 1 1.9 1.5L19 16"/><rect x="3" y="14" width="18" height="5" rx="1.5"/><circle cx="7.5" cy="19" r="1.3"/><circle cx="16.5" cy="19" r="1.3"/></svg></span><span><strong>Tôi sắp vay mua xe</strong><small>Mỗi tháng phải trả bao nhiêu, tổng lãi là bao nhiêu?</small></span></a>
+        <a class="card need" href="./vay-tra-gop/?principal=500000000&amp;rate=10&amp;months=60&amp;method=declining&amp;extra=3000000"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span><strong>Tôi muốn trả nợ sớm hơn</strong><small>Trả thêm mỗi tháng thì tiết kiệm được bao nhiêu tiền lãi?</small></span></a>
+        <a class="card need" href="./lai-tiet-kiem/"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/></svg></span><span><strong>Tôi có khoản tiền nhàn rỗi</strong><small>Gửi tiết kiệm theo kỳ hạn thì nhận được bao nhiêu lãi?</small></span></a>
+        <a class="card need" href="./lai-kep/"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16"/><path d="M5 15l4-4 3 3 7-8"/><path d="M15 6h4v4"/></svg></span><span><strong>Tôi muốn đầu tư dài hạn</strong><small>Góp đều mỗi tháng, sau 10–20 năm sẽ có bao nhiêu?</small></span></a>
+        <a class="card need" href="./muc-tieu/"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg></span><span><strong>Tôi có một mục tiêu cụ thể</strong><small>Cần để dành bao nhiêu mỗi tháng để đạt được đúng hạn?</small></span></a>
       </div>
+      <section class="card saved" id="saved" hidden>
+        <h2>Kịch bản bạn đã lưu</h2>
+        <ul id="saved-list"></ul>
+      </section>
+      <h2>Vì sao dùng TínhTiền?</h2>
+      <ul class="points">
+        <li><strong>Riêng cho bạn</strong>Lưu nhiều phương án để so sánh, trang tự nhớ số liệu bạn nhập lần trước.</li>
+        <li><strong>Dễ chia sẻ</strong>Mỗi phép tính có một liên kết riêng để gửi cho người thân hoặc nhân viên tư vấn.</li>
+        <li><strong>Nhìn là hiểu</strong>Biểu đồ gốc – lãi theo từng năm, bảng chi tiết tải về được dưới dạng CSV.</li>
+        <li><strong>Tuỳ chỉnh theo ý</strong>Chế độ sáng/tối, màu chủ đạo và cỡ chữ lớn cho người lớn tuổi.</li>
+      </ul>
       <div class="offers" id="offers" hidden></div>
     </div>
   </main>

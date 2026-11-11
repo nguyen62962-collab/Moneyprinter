@@ -3,44 +3,88 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tính lãi vay trả góp — lịch trả nợ hàng tháng | TínhTiền</title>
-  <meta name="description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều. Miễn phí, không cần đăng ký.">
-  <meta property="og:title" content="Tính lãi vay trả góp — lịch trả nợ hàng tháng | TínhTiền">
-  <meta property="og:description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều. Miễn phí, không cần đăng ký.">
+  <title>Tính lãi vay trả góp — lịch trả nợ, trả nợ trước hạn | TínhTiền</title>
+  <meta name="description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều; xem trả thêm mỗi tháng tiết kiệm bao nhiêu lãi.">
+  <meta property="og:title" content="Tính lãi vay trả góp — lịch trả nợ, trả nợ trước hạn | TínhTiền">
+  <meta property="og:description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều; xem trả thêm mỗi tháng tiết kiệm bao nhiêu lãi.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="vi_VN">
+  <meta name="theme-color" content="#0b7a4b">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <script src="../assets/prefs.js"></script>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body data-tool="loan">
   <header class="site">
     <div class="wrap">
       <a class="brand" href="../">Tính<span>Tiền</span></a>
       <nav class="main" aria-label="Công cụ">
         <a href="../vay-tra-gop/" aria-current="page">Vay trả góp</a>
+        <a href="../kha-nang-vay/">Khả năng vay</a>
         <a href="../lai-tiet-kiem/">Lãi tiết kiệm</a>
         <a href="../lai-kep/">Lãi kép</a>
+        <a href="../muc-tieu/">Mục tiêu</a>
       </nav>
+      <details class="prefs">
+        <summary>Tuỳ chỉnh</summary>
+        <div class="panel">
+          <fieldset>
+            <legend>Giao diện</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="auto"><span>Tự động</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="light"><span>Sáng</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="dark"><span>Tối</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Màu chủ đạo</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="green"><span><i class="dot green"></i>Xanh lá</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="blue"><span><i class="dot blue"></i>Xanh dương</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="purple"><span><i class="dot purple"></i>Tím</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="orange"><span><i class="dot orange"></i>Cam</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Cỡ chữ</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-size" data-pref="size" value="normal"><span>Vừa</span></label>
+              <label><input type="radio" name="pref-size" data-pref="size" value="large"><span>Lớn</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </details>
     </div>
   </header>
   <main>
     <div class="wrap">
       <h1>Tính lãi vay trả góp</h1>
-      <p class="lead">Nhập số tiền vay, lãi suất và thời hạn để xem số tiền phải trả mỗi tháng và lịch trả nợ chi tiết.</p>
-      <form class="card" id="loan-form" novalidate>
+      <p class="lead">Nhập khoản vay của bạn để xem số tiền phải trả mỗi tháng, biểu đồ gốc – lãi và lịch trả nợ chi tiết. Kết quả cập nhật ngay khi bạn gõ.</p>
+      <div class="chips">
+        <span class="label">Ví dụ nhanh:</span>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;2000000000&quot;,&quot;rate&quot;:&quot;9&quot;,&quot;months&quot;:&quot;240&quot;,&quot;method&quot;:&quot;declining&quot;,&quot;extra&quot;:&quot;&quot;}">Mua nhà 2 tỷ · 20 năm</button>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;600000000&quot;,&quot;rate&quot;:&quot;8,5&quot;,&quot;months&quot;:&quot;84&quot;,&quot;method&quot;:&quot;annuity&quot;,&quot;extra&quot;:&quot;&quot;}">Mua xe 600 triệu · 7 năm</button>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;50000000&quot;,&quot;rate&quot;:&quot;18&quot;,&quot;months&quot;:&quot;24&quot;,&quot;method&quot;:&quot;annuity&quot;,&quot;extra&quot;:&quot;&quot;}">Tiêu dùng 50 triệu · 2 năm</button>
+      </div>
+      <form class="card" id="tool-form" novalidate>
         <div class="grid">
           <div class="field">
             <label for="principal">Số tiền vay (đ)</label>
-            <input type="text" id="principal" inputmode="numeric" autocomplete="off" data-money value="500000000">
+            <input type="text" id="principal" name="principal" inputmode="numeric" autocomplete="off" data-money value="500000000">
           </div>
           <div class="field">
             <label for="rate">Lãi suất (%/năm)</label>
-            <input type="text" id="rate" inputmode="decimal" autocomplete="off" value="10">
+            <input type="text" id="rate" name="rate" inputmode="decimal" autocomplete="off" value="10">
           </div>
           <div class="field">
             <label for="months">Thời hạn vay (tháng)</label>
-            <input type="text" id="months" inputmode="numeric" autocomplete="off" value="60">
+            <input type="text" id="months" name="months" inputmode="numeric" autocomplete="off" value="60">
             <div class="hint">Từ 1 đến 600 tháng</div>
+          </div>
+          <div class="field">
+            <label for="extra">Trả thêm mỗi tháng (đ)</label>
+            <input type="text" id="extra" name="extra" inputmode="numeric" autocomplete="off" data-money value="">
+            <div class="hint">Không bắt buộc — để xem lợi ích khi trả nợ sớm</div>
           </div>
         </div>
         <fieldset>
@@ -54,13 +98,30 @@
       </form>
       <p class="error" id="error" role="alert"></p>
       <div class="result" id="result" aria-live="polite" hidden></div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" class="ghost" id="copy-link">Sao chép liên kết</button>
+        <button type="button" class="ghost" id="download-csv">Tải bảng (CSV)</button>
+        <button type="button" class="ghost" id="print">In kết quả</button>
+        <span class="note" id="action-note" role="status"></span>
+      </div>
+      <section class="card saved" id="saved">
+        <h2>Kịch bản của bạn</h2>
+        <form class="save-row" id="save-form">
+          <input type="text" id="save-name" maxlength="40" autocomplete="off" aria-label="Tên kịch bản" placeholder="Đặt tên, ví dụ: Phương án ngân hàng A">
+          <button class="primary" type="submit">Lưu phép tính này</button>
+        </form>
+        <p class="empty" id="saved-empty">Lưu lại các phương án để so sánh sau. Dữ liệu chỉ nằm trên thiết bị này của bạn.</p>
+        <ul id="saved-list"></ul>
+      </section>
       <div class="offers" id="offers" hidden></div>
       <section class="prose">
         <h2>Hai cách trả nợ khác nhau thế nào?</h2>
         <p><strong>Gốc đều, lãi theo dư nợ giảm dần:</strong> mỗi tháng trả một phần gốc bằng nhau (số tiền vay ÷ số tháng), tiền lãi tính trên dư nợ còn lại nên giảm dần theo thời gian. Những tháng đầu phải trả nhiều hơn, nhưng tổng lãi thấp hơn.</p>
         <p><strong>Trả đều hàng tháng:</strong> số tiền trả mỗi tháng cố định trong suốt thời hạn vay, dễ lập kế hoạch chi tiêu. Lãi vẫn tính trên dư nợ còn lại, nhưng gốc giảm chậm hơn ở giai đoạn đầu nên tổng lãi cao hơn.</p>
+        <h2>Trả thêm mỗi tháng có lợi gì?</h2>
+        <p>Khoản trả thêm được trừ thẳng vào dư nợ gốc, nên các tháng sau chịu ít lãi hơn và khoản vay kết thúc sớm hơn. Lưu ý nhiều hợp đồng có phí trả nợ trước hạn — hãy hỏi ngân hàng trước khi áp dụng.</p>
         <h2>Công thức</h2>
-        <p>Lãi mỗi tháng = dư nợ đầu kỳ × lãi suất năm ÷ 12. Với cách trả đều: tiền trả hàng tháng = <code>P × r ÷ (1 − (1 + r)<sup>−n</sup>)</code>, trong đó P là số tiền vay, r là lãi suất tháng, n là số tháng. Công cụ giả định lãi suất cố định suốt kỳ vay và chưa gồm các loại phí hay phí trả nợ trước hạn.</p>
+        <p>Lãi mỗi tháng = dư nợ đầu kỳ × lãi suất năm ÷ 12. Với cách trả đều: tiền trả hàng tháng = <code>P × r ÷ (1 − (1 + r)<sup>−n</sup>)</code>, trong đó P là số tiền vay, r là lãi suất tháng, n là số tháng. Công cụ giả định lãi suất cố định suốt kỳ vay và chưa gồm các loại phí.</p>
       </section>
     </div>
   </main>

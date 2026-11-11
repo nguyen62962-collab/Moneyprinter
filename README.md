@@ -1,7 +1,15 @@
 # TínhTiền — bộ công cụ tài chính cá nhân
 
-Trang web tĩnh tiếng Việt gồm ba công cụ: **tính lãi vay trả góp**, **lãi tiết kiệm**, **lãi kép**.
-Không cần máy chủ, không cần bước build — toàn bộ trang nằm trong thư mục `site/`.
+Trang web tĩnh tiếng Việt gồm năm công cụ: **vay trả góp** (kèm trả nợ trước hạn), **khả năng vay theo thu nhập**,
+**lãi tiết kiệm** (kèm tái tục), **lãi kép** và **kế hoạch tiết kiệm theo mục tiêu**.
+Không cần máy chủ — toàn bộ trang nằm trong thư mục `site/`.
+
+Điểm riêng cho từng người dùng (tất cả chạy trên trình duyệt, không gửi dữ liệu đi đâu):
+
+- Trang chủ dẫn theo nhu cầu ("Tôi muốn mua nhà", "Tôi muốn trả nợ sớm hơn"…), mỗi công cụ có ví dụ bấm nhanh.
+- Kết quả tự cập nhật khi gõ, có nhận xét bằng lời và biểu đồ gốc – lãi theo từng năm.
+- Lưu nhiều kịch bản để so sánh, tự nhớ số liệu lần trước, mỗi phép tính có liên kết chia sẻ riêng.
+- Tải bảng CSV, in kết quả; tuỳ chỉnh sáng/tối, màu chủ đạo và cỡ chữ.
 
 Nguồn thu của trang là quảng cáo (Google AdSense) và liên kết tiếp thị. Cả hai đều **tắt mặc định**
 và chỉ bật khi bạn điền thông tin của mình vào `site/assets/config.js`.
@@ -22,10 +30,14 @@ Thu nhập phụ thuộc vào lượng người truy cập; trang mới chưa c�
 ## Phát triển
 
 ```bash
-npm test                               # kiểm thử các công thức (cần Node 22+)
+npm test                                  # kiểm thử các công thức (cần Node 22+)
+npm run build                             # sinh lại các trang HTML sau khi sửa scripts/build-pages.js
 python3 -m http.server --directory site   # xem thử tại http://localhost:8000
 ```
 
 - `site/assets/calc.js` — công thức tính, tách khỏi giao diện, có test trong `tests/`.
-- `site/assets/app.js` — gắn biểu mẫu, quảng cáo và liên kết tiếp thị.
+- `site/assets/app.js` — biểu mẫu, biểu đồ, kịch bản đã lưu, quảng cáo và liên kết tiếp thị.
+- `site/assets/prefs.js`, `style.css` — tuỳ chỉnh giao diện của người dùng.
 - `site/assets/config.js` — nơi duy nhất cần sửa để bật kiếm tiền.
+- `scripts/build-pages.js` — khung chung và nội dung của mọi trang; **đừng sửa trực tiếp các file `index.html`**,
+  hãy sửa file này rồi chạy `npm run build` (CI sẽ báo lỗi nếu hai bên lệch nhau).

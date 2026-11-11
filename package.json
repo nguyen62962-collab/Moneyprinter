@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Bộ công cụ tính toán tài chính cá nhân (trang tĩnh)",
   "scripts": {
+    "build": "node scripts/build-pages.js",
     "test": "node --test tests/calc.test.js"
   }
 }

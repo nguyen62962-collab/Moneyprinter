@@ -3,55 +3,115 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tính lãi tiết kiệm ngân hàng theo kỳ hạn | TínhTiền</title>
-  <meta name="description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn. Miễn phí, kết quả tức thì.">
-  <meta property="og:title" content="Tính lãi tiết kiệm ngân hàng theo kỳ hạn | TínhTiền">
-  <meta property="og:description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn. Miễn phí, kết quả tức thì.">
+  <title>Tính lãi tiết kiệm ngân hàng theo kỳ hạn, có tái tục | TínhTiền</title>
+  <meta name="description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn; hỗ trợ tái tục cả gốc lẫn lãi qua nhiều kỳ.">
+  <meta property="og:title" content="Tính lãi tiết kiệm ngân hàng theo kỳ hạn, có tái tục | TínhTiền">
+  <meta property="og:description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn; hỗ trợ tái tục cả gốc lẫn lãi qua nhiều kỳ.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="vi_VN">
+  <meta name="theme-color" content="#0b7a4b">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <script src="../assets/prefs.js"></script>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
-<body>
+<body data-tool="savings">
   <header class="site">
     <div class="wrap">
       <a class="brand" href="../">Tính<span>Tiền</span></a>
       <nav class="main" aria-label="Công cụ">
         <a href="../vay-tra-gop/">Vay trả góp</a>
+        <a href="../kha-nang-vay/">Khả năng vay</a>
         <a href="../lai-tiet-kiem/" aria-current="page">Lãi tiết kiệm</a>
         <a href="../lai-kep/">Lãi kép</a>
+        <a href="../muc-tieu/">Mục tiêu</a>
       </nav>
+      <details class="prefs">
+        <summary>Tuỳ chỉnh</summary>
+        <div class="panel">
+          <fieldset>
+            <legend>Giao diện</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="auto"><span>Tự động</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="light"><span>Sáng</span></label>
+              <label><input type="radio" name="pref-theme" data-pref="theme" value="dark"><span>Tối</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Màu chủ đạo</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="green"><span><i class="dot green"></i>Xanh lá</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="blue"><span><i class="dot blue"></i>Xanh dương</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="purple"><span><i class="dot purple"></i>Tím</span></label>
+              <label><input type="radio" name="pref-accent" data-pref="accent" value="orange"><span><i class="dot orange"></i>Cam</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Cỡ chữ</legend>
+            <div class="seg">
+              <label><input type="radio" name="pref-size" data-pref="size" value="normal"><span>Vừa</span></label>
+              <label><input type="radio" name="pref-size" data-pref="size" value="large"><span>Lớn</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </details>
     </div>
   </header>
   <main>
     <div class="wrap">
       <h1>Tính lãi tiết kiệm</h1>
-      <p class="lead">Ước tính tiền lãi nhận được khi gửi tiết kiệm có kỳ hạn, lĩnh lãi cuối kỳ.</p>
-      <form class="card" id="savings-form" novalidate>
+      <p class="lead">Ước tính tiền lãi khi gửi tiết kiệm có kỳ hạn, lĩnh lãi cuối kỳ — kể cả khi bạn tái tục nhiều kỳ liên tiếp.</p>
+      <div class="chips">
+        <span class="label">Ví dụ nhanh:</span>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;100000000&quot;,&quot;rate&quot;:&quot;5&quot;,&quot;months&quot;:&quot;6&quot;,&quot;terms&quot;:&quot;1&quot;}">100 triệu · 6 tháng</button>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;500000000&quot;,&quot;rate&quot;:&quot;5,5&quot;,&quot;months&quot;:&quot;12&quot;,&quot;terms&quot;:&quot;1&quot;}">500 triệu · 12 tháng</button>
+        <button type="button" class="chip" data-preset="{&quot;principal&quot;:&quot;200000000&quot;,&quot;rate&quot;:&quot;5,5&quot;,&quot;months&quot;:&quot;12&quot;,&quot;terms&quot;:&quot;5&quot;}">200 triệu · tái tục 5 năm</button>
+      </div>
+      <form class="card" id="tool-form" novalidate>
         <div class="grid">
           <div class="field">
             <label for="principal">Số tiền gửi (đ)</label>
-            <input type="text" id="principal" inputmode="numeric" autocomplete="off" data-money value="100000000">
+            <input type="text" id="principal" name="principal" inputmode="numeric" autocomplete="off" data-money value="100000000">
           </div>
           <div class="field">
             <label for="rate">Lãi suất (%/năm)</label>
-            <input type="text" id="rate" inputmode="decimal" autocomplete="off" value="5,5">
+            <input type="text" id="rate" name="rate" inputmode="decimal" autocomplete="off" value="5,5">
+            <div class="hint">Nhập lãi suất ngân hàng báo cho bạn</div>
           </div>
           <div class="field">
             <label for="months">Kỳ hạn (tháng)</label>
-            <input type="text" id="months" inputmode="numeric" autocomplete="off" value="12">
+            <input type="text" id="months" name="months" inputmode="numeric" autocomplete="off" value="12">
             <div class="hint">Từ 1 đến 600 tháng</div>
+          </div>
+          <div class="field">
+            <label for="terms">Số kỳ gửi liên tiếp</label>
+            <input type="text" id="terms" name="terms" inputmode="numeric" autocomplete="off" value="1">
+            <div class="hint">Lớn hơn 1 = tái tục cả gốc lẫn lãi</div>
           </div>
         </div>
         <button class="primary" type="submit">Tính tiền lãi</button>
       </form>
       <p class="error" id="error" role="alert"></p>
       <div class="result" id="result" aria-live="polite" hidden></div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" class="ghost" id="copy-link">Sao chép liên kết</button>
+        <button type="button" class="ghost" id="download-csv">Tải bảng (CSV)</button>
+        <button type="button" class="ghost" id="print">In kết quả</button>
+        <span class="note" id="action-note" role="status"></span>
+      </div>
+      <section class="card saved" id="saved">
+        <h2>Kịch bản của bạn</h2>
+        <form class="save-row" id="save-form">
+          <input type="text" id="save-name" maxlength="40" autocomplete="off" aria-label="Tên kịch bản" placeholder="Đặt tên, ví dụ: Phương án ngân hàng A">
+          <button class="primary" type="submit">Lưu phép tính này</button>
+        </form>
+        <p class="empty" id="saved-empty">Lưu lại các phương án để so sánh sau. Dữ liệu chỉ nằm trên thiết bị này của bạn.</p>
+        <ul id="saved-list"></ul>
+      </section>
       <div class="offers" id="offers" hidden></div>
       <section class="prose">
         <h2>Cách tính</h2>
-        <p>Tiền lãi = số tiền gửi × lãi suất năm × số tháng ÷ 12. Ví dụ gửi 100.000.000 đ, lãi suất 6%/năm, kỳ hạn 6 tháng thì tiền lãi là 100.000.000 × 6% × 6 ÷ 12 = 3.000.000 đ.</p>
-        <p>Ngân hàng thường tính lãi theo số ngày gửi thực tế (÷ 365), nên số tiền thực nhận có thể chênh lệch đôi chút so với kết quả ở đây. Rút trước hạn thường chỉ được hưởng lãi suất không kỳ hạn.</p>
+        <p>Tiền lãi mỗi kỳ = số dư đầu kỳ × lãi suất năm × số tháng ÷ 12. Ví dụ gửi 100.000.000 đ, lãi suất 6%/năm, kỳ hạn 6 tháng thì tiền lãi là 100.000.000 × 6% × 6 ÷ 12 = 3.000.000 đ. Khi tái tục, tiền lãi được nhập vào gốc để tính cho kỳ sau với cùng lãi suất.</p>
+        <p>Ngân hàng thường tính lãi theo số ngày gửi thực tế (÷ 365) và lãi suất có thể thay đổi khi tái tục, nên số tiền thực nhận có thể chênh lệch đôi chút. Rút trước hạn thường chỉ được hưởng lãi suất không kỳ hạn.</p>
       </section>
     </div>
   </main>
