@@ -23,10 +23,10 @@ jobs:
       - name: Các trang HTML phải khớp với scripts/build-pages.js
         run: npm run build && git diff --exit-code -- site
 
-  # Chỉ chạy khi đã bật: Settings → Secrets and variables → Actions → Variables → DEPLOY_PAGES = true
+  # Triển khai lên GitHub Pages mỗi khi nhánh mặc định có thay đổi
   deploy:
     needs: test
-    if: vars.DEPLOY_PAGES == 'true' && github.ref_name == github.event.repository.default_branch
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -38,6 +38,8 @@ jobs:
       - uses: actions/checkout@v4
       - id: pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Tạo sitemap theo địa chỉ thật của trang
         env:
           BASE_URL: ${{ steps.pages.outputs.base_url }}
