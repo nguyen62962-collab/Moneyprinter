@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tính lãi tiết kiệm ngân hàng theo kỳ hạn | TínhTiền</title>
+  <meta name="description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn. Miễn phí, kết quả tức thì.">
+  <meta property="og:title" content="Tính lãi tiết kiệm ngân hàng theo kỳ hạn | TínhTiền">
+  <meta property="og:description" content="Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn. Miễn phí, kết quả tức thì.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="vi_VN">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="../">Tính<span>Tiền</span></a>
+      <nav class="main" aria-label="Công cụ">
+        <a href="../vay-tra-gop/">Vay trả góp</a>
+        <a href="../lai-tiet-kiem/" aria-current="page">Lãi tiết kiệm</a>
+        <a href="../lai-kep/">Lãi kép</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <h1>Tính lãi tiết kiệm</h1>
+      <p class="lead">Ước tính tiền lãi nhận được khi gửi tiết kiệm có kỳ hạn, lĩnh lãi cuối kỳ.</p>
+      <form class="card" id="savings-form" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label for="principal">Số tiền gửi (đ)</label>
+            <input type="text" id="principal" inputmode="numeric" autocomplete="off" data-money value="100000000">
+          </div>
+          <div class="field">
+            <label for="rate">Lãi suất (%/năm)</label>
+            <input type="text" id="rate" inputmode="decimal" autocomplete="off" value="5,5">
+          </div>
+          <div class="field">
+            <label for="months">Kỳ hạn (tháng)</label>
+            <input type="text" id="months" inputmode="numeric" autocomplete="off" value="12">
+            <div class="hint">Từ 1 đến 600 tháng</div>
+          </div>
+        </div>
+        <button class="primary" type="submit">Tính tiền lãi</button>
+      </form>
+      <p class="error" id="error" role="alert"></p>
+      <div class="result" id="result" aria-live="polite" hidden></div>
+      <div class="offers" id="offers" hidden></div>
+      <section class="prose">
+        <h2>Cách tính</h2>
+        <p>Tiền lãi = số tiền gửi × lãi suất năm × số tháng ÷ 12. Ví dụ gửi 100.000.000 đ, lãi suất 6%/năm, kỳ hạn 6 tháng thì tiền lãi là 100.000.000 × 6% × 6 ÷ 12 = 3.000.000 đ.</p>
+        <p>Ngân hàng thường tính lãi theo số ngày gửi thực tế (÷ 365), nên số tiền thực nhận có thể chênh lệch đôi chút so với kết quả ở đây. Rút trước hạn thường chỉ được hưởng lãi suất không kỳ hạn.</p>
+      </section>
+    </div>
+  </main>
+  <footer class="site">
+    <div class="wrap">
+      <p>Kết quả chỉ mang tính tham khảo, không phải tư vấn tài chính. Số liệu thực tế tuỳ thuộc hợp đồng với ngân hàng hoặc tổ chức tín dụng của bạn.</p>
+      <p><a href="../chinh-sach/">Chính sách quyền riêng tư</a></p>
+    </div>
+  </footer>
+  <script src="../assets/config.js"></script>
+  <script src="../assets/calc.js"></script>
+  <script src="../assets/app.js"></script>
+</body>
+</html>

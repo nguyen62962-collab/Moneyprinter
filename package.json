@@ -1,0 +1,9 @@
+{
+  "name": "tinh-tien",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Bộ công cụ tính toán tài chính cá nhân (trang tĩnh)",
+  "scripts": {
+    "test": "node --test tests/calc.test.js"
+  }
+}

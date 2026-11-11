@@ -1,0 +1,56 @@
+name: Kiểm thử và triển khai
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  # Chỉ chạy khi đã bật: Settings → Secrets and variables → Actions → Variables → DEPLOY_PAGES = true
+  deploy:
+    needs: test
+    if: vars.DEPLOY_PAGES == 'true' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: pages
+        uses: actions/configure-pages@v5
+      - name: Tạo sitemap theo địa chỉ thật của trang
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          {
+            echo '<?xml version="1.0" encoding="UTF-8"?>'
+            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            for p in "" vay-tra-gop/ lai-tiet-kiem/ lai-kep/ chinh-sach/; do
+              echo "  <url><loc>${BASE_URL}/${p}</loc></url>"
+            done
+            echo '</urlset>'
+          } > site/sitemap.xml
+          echo "Sitemap: ${BASE_URL}/sitemap.xml" >> site/robots.txt
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

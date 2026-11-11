@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tính lãi vay trả góp — lịch trả nợ hàng tháng | TínhTiền</title>
+  <meta name="description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều. Miễn phí, không cần đăng ký.">
+  <meta property="og:title" content="Tính lãi vay trả góp — lịch trả nợ hàng tháng | TínhTiền">
+  <meta property="og:description" content="Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều. Miễn phí, không cần đăng ký.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="vi_VN">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <a class="brand" href="../">Tính<span>Tiền</span></a>
+      <nav class="main" aria-label="Công cụ">
+        <a href="../vay-tra-gop/" aria-current="page">Vay trả góp</a>
+        <a href="../lai-tiet-kiem/">Lãi tiết kiệm</a>
+        <a href="../lai-kep/">Lãi kép</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <h1>Tính lãi vay trả góp</h1>
+      <p class="lead">Nhập số tiền vay, lãi suất và thời hạn để xem số tiền phải trả mỗi tháng và lịch trả nợ chi tiết.</p>
+      <form class="card" id="loan-form" novalidate>
+        <div class="grid">
+          <div class="field">
+            <label for="principal">Số tiền vay (đ)</label>
+            <input type="text" id="principal" inputmode="numeric" autocomplete="off" data-money value="500000000">
+          </div>
+          <div class="field">
+            <label for="rate">Lãi suất (%/năm)</label>
+            <input type="text" id="rate" inputmode="decimal" autocomplete="off" value="10">
+          </div>
+          <div class="field">
+            <label for="months">Thời hạn vay (tháng)</label>
+            <input type="text" id="months" inputmode="numeric" autocomplete="off" value="60">
+            <div class="hint">Từ 1 đến 600 tháng</div>
+          </div>
+        </div>
+        <fieldset>
+          <legend>Cách trả nợ</legend>
+          <div class="radios">
+            <label><input type="radio" name="method" value="declining" checked> Gốc đều, lãi theo dư nợ giảm dần</label>
+            <label><input type="radio" name="method" value="annuity"> Trả đều hàng tháng (gốc + lãi)</label>
+          </div>
+        </fieldset>
+        <button class="primary" type="submit">Tính lịch trả nợ</button>
+      </form>
+      <p class="error" id="error" role="alert"></p>
+      <div class="result" id="result" aria-live="polite" hidden></div>
+      <div class="offers" id="offers" hidden></div>
+      <section class="prose">
+        <h2>Hai cách trả nợ khác nhau thế nào?</h2>
+        <p><strong>Gốc đều, lãi theo dư nợ giảm dần:</strong> mỗi tháng trả một phần gốc bằng nhau (số tiền vay ÷ số tháng), tiền lãi tính trên dư nợ còn lại nên giảm dần theo thời gian. Những tháng đầu phải trả nhiều hơn, nhưng tổng lãi thấp hơn.</p>
+        <p><strong>Trả đều hàng tháng:</strong> số tiền trả mỗi tháng cố định trong suốt thời hạn vay, dễ lập kế hoạch chi tiêu. Lãi vẫn tính trên dư nợ còn lại, nhưng gốc giảm chậm hơn ở giai đoạn đầu nên tổng lãi cao hơn.</p>
+        <h2>Công thức</h2>
+        <p>Lãi mỗi tháng = dư nợ đầu kỳ × lãi suất năm ÷ 12. Với cách trả đều: tiền trả hàng tháng = <code>P × r ÷ (1 − (1 + r)<sup>−n</sup>)</code>, trong đó P là số tiền vay, r là lãi suất tháng, n là số tháng. Công cụ giả định lãi suất cố định suốt kỳ vay và chưa gồm các loại phí hay phí trả nợ trước hạn.</p>
+      </section>
+    </div>
+  </main>
+  <footer class="site">
+    <div class="wrap">
+      <p>Kết quả chỉ mang tính tham khảo, không phải tư vấn tài chính. Số liệu thực tế tuỳ thuộc hợp đồng với ngân hàng hoặc tổ chức tín dụng của bạn.</p>
+      <p><a href="../chinh-sach/">Chính sách quyền riêng tư</a></p>
+    </div>
+  </footer>
+  <script src="../assets/config.js"></script>
+  <script src="../assets/calc.js"></script>
+  <script src="../assets/app.js"></script>
+</body>
+</html>
