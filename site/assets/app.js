@@ -536,7 +536,8 @@
 
   /* ================= Kiếm tiền: chỉ kích hoạt khi đã điền config.js ================= */
   var cfg = window.SITE_CONFIG || {};
-  if (typeof cfg.adsenseClient === "string" && /^ca-pub-\d{10,20}$/.test(cfg.adsenseClient)) {
+  if (typeof cfg.adsenseClient === "string" && /^ca-pub-\d{10,20}$/.test(cfg.adsenseClient) &&
+      !document.querySelector('script[src*="adsbygoogle.js"]')) {
     var s = document.createElement("script");
     s.async = true;
     s.crossOrigin = "anonymous";

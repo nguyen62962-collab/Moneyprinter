@@ -20,8 +20,8 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      - name: Các trang HTML phải khớp với scripts/build-pages.js
-        run: npm run build && git diff --exit-code -- site
+      - name: Dựng trang
+        run: npm run build
 
   # Triển khai lên GitHub Pages mỗi khi nhánh mặc định có thay đổi
   deploy:
@@ -37,6 +37,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Dựng trang (áp dụng mã AdSense trong config.js)
+        run: npm run build
       - id: pages
         uses: actions/configure-pages@v5
         with:
@@ -48,7 +53,7 @@ jobs:
           {
             echo '<?xml version="1.0" encoding="UTF-8"?>'
             echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-            for p in "" vay-tra-gop/ lai-tiet-kiem/ lai-kep/ chinh-sach/; do
+            (cd site && find . -name index.html | sed 's#^\./##; s#index\.html$##' | sort) | while read -r p; do
               echo "  <url><loc>${BASE_URL}/${p}</loc></url>"
             done
             echo '</urlset>'

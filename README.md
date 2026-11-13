@@ -40,4 +40,4 @@ python3 -m http.server --directory site   # xem thử tại http://localhost:800
 - `site/assets/prefs.js`, `style.css` — tuỳ chỉnh giao diện của người dùng.
 - `site/assets/config.js` — nơi duy nhất cần sửa để bật kiếm tiền.
 - `scripts/build-pages.js` — khung chung và nội dung của mọi trang; **đừng sửa trực tiếp các file `index.html`**,
-  hãy sửa file này rồi chạy `npm run build` (CI sẽ báo lỗi nếu hai bên lệch nhau).
+  hãy sửa file này. Lúc triển khai, các trang luôn được dựng lại từ file này và `config.js`.

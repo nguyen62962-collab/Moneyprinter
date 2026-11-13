@@ -6,6 +6,24 @@ const fs = require("fs");
 const path = require("path");
 const out = path.join(__dirname, "..", "site");
 
+/* Mã AdSense lấy từ site/assets/config.js — nơi duy nhất người dùng cần sửa. */
+const configText = fs.readFileSync(path.join(out, "assets", "config.js"), "utf8");
+const adsMatch = configText.match(/adsenseClient\s*:\s*["']([^"']*)["']/);
+const adsenseClient = adsMatch ? adsMatch[1].trim() : "";
+if (adsenseClient && !/^ca-pub-\d{10,20}$/.test(adsenseClient)) {
+  console.error('Mã AdSense trong site/assets/config.js sai định dạng: "' + adsenseClient + '". Đúng dạng: "ca-pub-" + 16 chữ số.');
+  process.exit(1);
+}
+const adsHead = adsenseClient ? `
+  <meta name="google-adsense-account" content="${adsenseClient}">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}" crossorigin="anonymous"></script>` : "";
+const adsTxt = path.join(out, "ads.txt");
+if (adsenseClient) {
+  fs.writeFileSync(adsTxt, "google.com, " + adsenseClient.replace(/^ca-/, "") + ", DIRECT, f08c47fec0942fa0\n");
+} else if (fs.existsSync(adsTxt)) {
+  fs.unlinkSync(adsTxt);
+}
+
 const nav = [
   ["vay-tra-gop", "Vay trả góp"],
   ["kha-nang-vay", "Khả năng vay"],
@@ -60,7 +78,7 @@ function page({ dir, tool, title, desc, body, scripts = true }) {
   <meta property="og:description" content="${esc(desc)}">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="vi_VN">
-  <meta name="theme-color" content="#0b7a4b">
+  <meta name="theme-color" content="#0b7a4b">${adsHead}
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
   <script src="${root}assets/prefs.js"></script>
   <link rel="stylesheet" href="${root}assets/style.css">
@@ -330,4 +348,4 @@ page({
       </div>`
 });
 
-console.log("Đã sinh " + (nav.length + 2) + " trang vào site/");
+console.log("Đã sinh " + (nav.length + 2) + " trang vào site/" + (adsenseClient ? " (AdSense: " + adsenseClient + ", kèm ads.txt)" : " (chưa bật AdSense)"));
