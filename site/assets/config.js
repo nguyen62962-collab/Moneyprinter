@@ -8,6 +8,6 @@
  *   Mỗi mục: { title: "...", text: "...", url: "https://..." } — url phải bắt đầu bằng https://
  */
 window.SITE_CONFIG = {
-  adsenseClient: "",
+  adsenseClient: "ca-pub-6545362451222932",
   affiliateLinks: []
 };
