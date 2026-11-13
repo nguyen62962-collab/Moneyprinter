@@ -217,6 +217,7 @@ footer.site p { margin: 0 0 6px; }
   .article table { font-size: .8rem; }
   .article th, .article td { padding: 7px 6px; }
   .article td:first-child { min-width: 6.5em; }
+  .article.wide td:first-child { min-width: 0; white-space: nowrap; }
 }
 .article .formula code { display: inline-block; padding: 6px 10px; white-space: normal; }
 .cta { margin: 18px 0; }
@@ -227,3 +228,16 @@ footer.site p { margin: 0 0 6px; }
 .cta .primary-link:hover { background: var(--accent); color: var(--accent-ink); }
 .disclaimer { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
 @media print { .related, .crumbs, .cta { display: none !important; } .article .prose, .article { display: block !important; } }
+
+/* ---- Bảng tra nhanh, chia sẻ ---- */
+.quick-links { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-links a {
+  display: inline-block; text-decoration: none; padding: 7px 14px; border-radius: 999px; font-size: .92rem;
+  background: var(--surface); border: 1px solid var(--line); color: var(--text);
+}
+.quick-links a:hover { border-color: var(--accent); color: var(--accent); }
+.prose.wide { max-width: none; }
+.prose.wide > p, .prose.wide > ul { max-width: 68ch; }
+.share-row { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.share-row .note { font-size: .85rem; color: var(--muted); }
+@media print { .share-row, .quick-links { display: none !important; } }

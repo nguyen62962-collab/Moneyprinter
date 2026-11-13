@@ -534,6 +534,22 @@
   }
   renderSaved();
 
+  /* ================= Nút chia sẻ ================= */
+  document.querySelectorAll("[data-share]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var noteEl = btn.parentNode.querySelector("[data-share-note]");
+      var say = function (text) { if (noteEl) noteEl.textContent = text; };
+      var url = location.href.split("#")[0];
+      var copy = function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () { say("Đã sao chép liên kết."); }, function () { window.prompt("Sao chép liên kết này:", url); });
+        } else { window.prompt("Sao chép liên kết này:", url); }
+      };
+      if (navigator.share) navigator.share({ title: document.title, url: url }).catch(function (e) { if (!e || e.name !== "AbortError") copy(); });
+      else copy();
+    });
+  });
+
   /* ================= Kiếm tiền: chỉ kích hoạt khi đã điền config.js ================= */
   var cfg = window.SITE_CONFIG || {};
   if (typeof cfg.adsenseClient === "string" && /^ca-pub-\d{10,20}$/.test(cfg.adsenseClient) &&

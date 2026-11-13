@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://nguyen62962-collab.github.io/Moneyprinter/sitemap.xml

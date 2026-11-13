@@ -4,8 +4,13 @@
 "use strict";
 const fs = require("fs");
 const { articles } = require("./articles.js");
+const { tablePages } = require("./tables.js");
 const path = require("path");
 const out = path.join(__dirname, "..", "site");
+
+/* Địa chỉ công khai của trang (không có dấu / ở cuối) — dùng cho canonical, sitemap, thẻ chia sẻ.
+ * Khi đổi sang tên miền riêng: sửa giá trị mặc định dưới đây (hoặc đặt biến môi trường SITE_URL). */
+const SITE_URL = (process.env.SITE_URL || "https://nguyen62962-collab.github.io/Moneyprinter").replace(/\/+$/, "");
 
 /* Mã AdSense lấy từ site/assets/config.js — nơi duy nhất người dùng cần sửa. */
 const configText = fs.readFileSync(path.join(out, "assets", "config.js"), "utf8");
@@ -15,9 +20,16 @@ if (adsenseClient && !/^ca-pub-\d{10,20}$/.test(adsenseClient)) {
   console.error('Mã AdSense trong site/assets/config.js sai định dạng: "' + adsenseClient + '". Đúng dạng: "ca-pub-" + 16 chữ số.');
   process.exit(1);
 }
-const adsHead = adsenseClient ? `
+const gsvMatch = configText.match(/googleSiteVerification\s*:\s*["']([^"']*)["']/);
+const googleSiteVerification = gsvMatch ? gsvMatch[1].trim() : "";
+if (googleSiteVerification && !/^[A-Za-z0-9_-]{20,100}$/.test(googleSiteVerification)) {
+  console.error("Mã xác minh Google Search Console trong site/assets/config.js sai định dạng. Chỉ dán phần giá trị trong content=\"...\".");
+  process.exit(1);
+}
+const adsHead = (googleSiteVerification ? `
+  <meta name="google-site-verification" content="${googleSiteVerification}">` : "") + (adsenseClient ? `
   <meta name="google-adsense-account" content="${adsenseClient}">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}" crossorigin="anonymous"></script>` : "";
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}" crossorigin="anonymous"></script>` : "");
 const adsTxt = path.join(out, "ads.txt");
 if (adsenseClient) {
   fs.writeFileSync(adsTxt, "google.com, " + adsenseClient.replace(/^ca-/, "") + ", DIRECT, f08c47fec0942fa0\n");
@@ -31,6 +43,7 @@ const nav = [
   ["lai-tiet-kiem", "Lãi tiết kiệm"],
   ["lai-kep", "Lãi kép"],
   ["muc-tieu", "Mục tiêu"],
+  ["bang-tinh", "Bảng tra"],
   ["huong-dan", "Hướng dẫn"]
 ];
 
@@ -74,7 +87,17 @@ ${slugs.map((slug) => { const a = bySlug[slug]; return `        <li><a href="${r
       </ul>`;
 }
 
+const built = [];
+const jsonLd = (obj) => `\n  <script type="application/ld+json">${JSON.stringify(obj).replace(/</g, "\\u003c")}</script>`;
+const crumbsLd = (items) => ({
+  "@context": "https://schema.org", "@type": "BreadcrumbList",
+  itemListElement: items.map(([name, p], i) => ({ "@type": "ListItem", position: i + 1, name, item: SITE_URL + "/" + p }))
+});
+const shareRow = `<p class="share-row"><button type="button" class="ghost" data-share>Chia sẻ trang này</button> <span class="note" data-share-note role="status"></span></p>`;
+
 function page({ dir, tool, title, desc, body, scripts = true, ogType = "website", headExtra = "" }) {
+  const url = SITE_URL + "/" + (dir ? dir + "/" : "");
+  built.push(url);
   const depth = dir ? dir.split("/").length : 0;
   const root = depth ? "../".repeat(depth) : "./";
   const section = dir.split("/")[0];
@@ -89,6 +112,13 @@ function page({ dir, tool, title, desc, body, scripts = true, ogType = "website"
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
   <meta property="og:type" content="${ogType}">
+  <link rel="canonical" href="${url}">
+  <meta property="og:url" content="${url}">
+  <meta property="og:site_name" content="TínhTiền">
+  <meta property="og:image" content="${SITE_URL}/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta property="og:locale" content="vi_VN">
   <meta name="theme-color" content="#0b7a4b">${adsHead}
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
@@ -140,9 +170,20 @@ const chips = (items) => `      <div class="chips">
 ${items.map(([label, preset]) => `        <button type="button" class="chip" data-preset="${esc(JSON.stringify(preset))}">${label}</button>`).join("\n")}
       </div>`;
 
-function toolPage({ dir, tool, title, desc, h1, lead, presets, fields, extra = "", button, prose, related = [] }) {
+function quickLinks(kind, root) {
+  return `<ul class="quick-links">
+${tablePages.filter((t) => t.kind === kind).map((t) => `        <li><a href="${root}bang-tinh/${t.slug}/">${t.short}</a></li>`).join("\n")}
+      </ul>`;
+}
+
+function toolPage({ dir, tool, title, desc, h1, lead, presets, fields, extra = "", button, prose, related = [], quick = "" }) {
   page({
     dir, tool, title, desc,
+    headExtra: jsonLd({
+      "@context": "https://schema.org", "@type": "WebApplication", name: h1, description: desc, url: SITE_URL + "/" + dir + "/",
+      applicationCategory: "FinanceApplication", operatingSystem: "Any", inLanguage: "vi",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "VND" }
+    }),
     body: `      <h1>${h1}</h1>
       <p class="lead">${lead}</p>
 ${chips(presets)}
@@ -172,7 +213,11 @@ ${fields.join("\n")}
       <div class="offers" id="offers" hidden></div>
       <section class="prose">
 ${prose}
-      </section>${related.length ? `
+      </section>${quick ? `
+      <section class="related">
+        <h2>Bảng tra nhanh</h2>
+      ${quickLinks(quick, "../")}
+      </section>` : ""}${related.length ? `
       <section class="related">
         <h2>Đọc thêm</h2>
       ${articleList(related, "../")}
@@ -192,6 +237,8 @@ const needs = [
 ];
 page({
   dir: "",
+  headExtra: jsonLd({ "@context": "https://schema.org", "@type": "WebSite", name: "TínhTiền", url: SITE_URL + "/", inLanguage: "vi",
+    description: "Bộ công cụ tài chính cá nhân miễn phí: vay trả góp, khả năng vay, lãi tiết kiệm, lãi kép, kế hoạch tiết kiệm." }),
   title: "TínhTiền — Tính lãi vay, khả năng vay, lãi tiết kiệm, lãi kép miễn phí",
   desc: "Bộ công cụ tài chính cá nhân miễn phí: lịch trả góp, khả năng vay theo thu nhập, lãi tiết kiệm, lãi kép và kế hoạch đạt mục tiêu. Có biểu đồ, lưu kịch bản, không cần đăng ký.",
   body: `      <section class="hero">
@@ -206,6 +253,10 @@ ${needs.map(([href, ico, t, s]) => `        <a class="card need" href="${esc(hre
         <h2>Kịch bản bạn đã lưu</h2>
         <ul id="saved-list"></ul>
       </section>
+      <h2>Tra nhanh không cần nhập liệu</h2>
+      <p class="lead">Vay bao nhiêu thì mỗi tháng trả bao nhiêu? Gửi bao nhiêu thì lãi bao nhiêu? Xem ngay bảng tính sẵn.</p>
+      ${quickLinks("loan", "./")}
+      ${quickLinks("savings", "./")}
       <h2>Hướng dẫn tài chính cá nhân</h2>
       ${articleList(["goc-deu-hay-tra-deu", "vay-mua-nha-bao-nhieu-la-vua", "lai-don-va-lai-kep"], "./")}
       <p><a href="./huong-dan/">Xem tất cả ${articles.length} bài hướng dẫn →</a></p>
@@ -221,7 +272,7 @@ ${needs.map(([href, ico, t, s]) => `        <a class="card need" href="${esc(hre
 
 /* ---------------- Các công cụ ---------------- */
 toolPage({
-  dir: "vay-tra-gop", related: ["goc-deu-hay-tra-deu", "tra-no-truoc-han", "lai-suat-uu-dai-va-tha-noi"], tool: "loan",
+  dir: "vay-tra-gop", quick: "loan", related: ["goc-deu-hay-tra-deu", "tra-no-truoc-han", "lai-suat-uu-dai-va-tha-noi"], tool: "loan",
   title: "Tính lãi vay trả góp — lịch trả nợ, trả nợ trước hạn | TínhTiền",
   desc: "Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều; xem trả thêm mỗi tháng tiết kiệm bao nhiêu lãi.",
   h1: "Tính lãi vay trả góp",
@@ -280,7 +331,7 @@ toolPage({
 });
 
 toolPage({
-  dir: "lai-tiet-kiem", related: ["lai-suat-thuc", "quy-du-phong", "lai-don-va-lai-kep"], tool: "savings",
+  dir: "lai-tiet-kiem", quick: "savings", related: ["lai-suat-thuc", "quy-du-phong", "lai-don-va-lai-kep"], tool: "savings",
   title: "Tính lãi tiết kiệm ngân hàng theo kỳ hạn, có tái tục | TínhTiền",
   desc: "Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn; hỗ trợ tái tục cả gốc lẫn lãi qua nhiều kỳ.",
   h1: "Tính lãi tiết kiệm",
@@ -381,21 +432,26 @@ articles.forEach((a, i) => {
   const others = articles.filter((x) => x.slug !== a.slug);
   const related = others.slice(i % others.length).concat(others.slice(0, i % others.length)).slice(0, 3).map((x) => x.slug);
   const toolName = nav.find(([d]) => d === a.tool)[1];
-  const ld = JSON.stringify({
+  const articleUrl = SITE_URL + "/huong-dan/" + a.slug + "/";
+  const ld = {
     "@context": "https://schema.org", "@type": "Article", headline: a.title, description: a.desc,
-    inLanguage: "vi", datePublished: PUBLISHED, dateModified: PUBLISHED, author: { "@type": "Organization", name: "TínhTiền" }
-  }).replace(/</g, "\\u003c");
+    inLanguage: "vi", datePublished: PUBLISHED, dateModified: PUBLISHED, mainEntityOfPage: articleUrl,
+    image: SITE_URL + "/assets/og.png",
+    author: { "@type": "Organization", name: "TínhTiền", url: SITE_URL + "/" },
+    publisher: { "@type": "Organization", name: "TínhTiền", url: SITE_URL + "/" }
+  };
   page({
     dir: "huong-dan/" + a.slug,
     ogType: "article",
     title: a.title + " | TínhTiền",
     desc: a.desc,
-    headExtra: `\n  <script type="application/ld+json">${ld}</script>`,
+    headExtra: jsonLd(ld) + jsonLd(crumbsLd([["Trang chủ", ""], ["Hướng dẫn", "huong-dan/"], [a.title, "huong-dan/" + a.slug + "/"]])),
     body: `      <nav class="crumbs" aria-label="Vị trí"><a href="../../">Trang chủ</a> › <a href="../">Hướng dẫn</a></nav>
       <article class="prose article">
         <h1>${a.title}</h1>
         <p class="article-meta">Cập nhật ngày ${PUBLISHED.split("-").reverse().join("/")} · Công cụ liên quan: <a href="../../${a.tool}/">${toolName}</a></p>
 ${a.body.trim().split("\n").map((l) => (l ? "        " + l : l)).join("\n")}
+        ${shareRow}
         <p class="disclaimer">Bài viết chỉ nhằm cung cấp thông tin chung, không phải tư vấn tài chính. Số liệu trong ví dụ là giả định để minh hoạ; điều kiện thực tế tuỳ hợp đồng và chính sách của từng tổ chức.</p>
       </article>
       <div class="offers" id="offers" hidden></div>
@@ -406,4 +462,52 @@ ${a.body.trim().split("\n").map((l) => (l ? "        " + l : l)).join("\n")}
   });
 });
 
-console.log("Đã sinh " + (nav.length + 2 + articles.length) + " trang vào site/" + (adsenseClient ? " (AdSense: " + adsenseClient + ", kèm ads.txt)" : " (chưa bật AdSense)"));
+const loanTables = tablePages.filter((t) => t.kind === "loan"), saveTables = tablePages.filter((t) => t.kind === "savings");
+page({
+  dir: "bang-tinh",
+  title: "Bảng tra nhanh: vay trả góp mỗi tháng bao nhiêu, gửi tiết kiệm lãi bao nhiêu | TínhTiền",
+  desc: "Các bảng tính sẵn: vay 100 triệu đến 3 tỷ trả góp mỗi tháng bao nhiêu, gửi tiết kiệm 50 triệu đến 5 tỷ lãi bao nhiêu theo từng kỳ hạn và lãi suất.",
+  headExtra: jsonLd(crumbsLd([["Trang chủ", ""], ["Bảng tra nhanh", "bang-tinh/"]])),
+  body: `      <h1>Bảng tra nhanh</h1>
+      <p class="lead">Không cần nhập liệu — chọn số tiền gần với trường hợp của bạn để xem bảng tính sẵn theo thời hạn và lãi suất.</p>
+      <h2>Vay trả góp mỗi tháng bao nhiêu?</h2>
+      ${quickLinks("loan", "../")}
+      <h2>Gửi tiết kiệm lãi bao nhiêu?</h2>
+      ${quickLinks("savings", "../")}
+      <div class="offers" id="offers" hidden></div>`
+});
+tablePages.forEach((t) => {
+  const siblings = (t.kind === "loan" ? loanTables : saveTables).filter((x) => x.slug !== t.slug);
+  page({
+    dir: "bang-tinh/" + t.slug,
+    title: t.title + " | TínhTiền",
+    desc: t.desc,
+    headExtra: jsonLd(crumbsLd([["Trang chủ", ""], ["Bảng tra nhanh", "bang-tinh/"], [t.short, "bang-tinh/" + t.slug + "/"]])),
+    body: `      <nav class="crumbs" aria-label="Vị trí"><a href="../../">Trang chủ</a> › <a href="../">Bảng tra nhanh</a></nav>
+      <article class="prose article wide">
+        <h1>${t.title}</h1>
+${t.body.trim().split("\n").map((l) => (l ? "        " + l : l)).join("\n")}
+        ${shareRow}
+      </article>
+      <div class="offers" id="offers" hidden></div>
+      <section class="related">
+        <h2>${t.kind === "loan" ? "Vay số tiền khác" : "Gửi số tiền khác"}</h2>
+      <ul class="quick-links">
+${siblings.map((x) => `        <li><a href="../${x.slug}/">${x.short}</a></li>`).join("\n")}
+      </ul>
+      </section>
+      <section class="related">
+        <h2>Đọc thêm</h2>
+      ${articleList(t.kind === "loan" ? ["goc-deu-hay-tra-deu", "vay-mua-nha-bao-nhieu-la-vua"] : ["lai-suat-thuc", "quy-du-phong"], "../../")}
+      </section>`
+  });
+});
+
+fs.writeFileSync(path.join(out, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${built.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}
+</urlset>
+`);
+fs.writeFileSync(path.join(out, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+
+console.log("Đã sinh " + built.length + " trang vào site/" + (adsenseClient ? " (AdSense: " + adsenseClient + ", kèm ads.txt)" : " (chưa bật AdSense)"));

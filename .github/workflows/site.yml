@@ -40,25 +40,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Dựng trang (áp dụng mã AdSense trong config.js)
-        run: npm run build
       - id: pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Tạo sitemap theo địa chỉ thật của trang
+      - name: Dựng trang (mã AdSense, canonical và sitemap theo địa chỉ thật)
         env:
-          BASE_URL: ${{ steps.pages.outputs.base_url }}
-        run: |
-          {
-            echo '<?xml version="1.0" encoding="UTF-8"?>'
-            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-            (cd site && find . -name index.html | sed 's#^\./##; s#index\.html$##' | sort) | while read -r p; do
-              echo "  <url><loc>${BASE_URL}/${p}</loc></url>"
-            done
-            echo '</urlset>'
-          } > site/sitemap.xml
-          echo "Sitemap: ${BASE_URL}/sitemap.xml" >> site/robots.txt
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

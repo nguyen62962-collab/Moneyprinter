@@ -40,5 +40,13 @@ python3 -m http.server --directory site   # xem thử tại http://localhost:800
 - `site/assets/prefs.js`, `style.css` — tuỳ chỉnh giao diện của người dùng.
 - `site/assets/config.js` — nơi duy nhất cần sửa để bật kiếm tiền.
 - `scripts/articles.js` — nội dung các bài hướng dẫn; số liệu ví dụ được tính bằng `calc.js` lúc dựng trang, không gõ tay.
+- `scripts/tables.js` — các trang "bảng tra nhanh" (vay X trả góp bao nhiêu, gửi X lãi bao nhiêu), cũng tính bằng `calc.js`.
 - `scripts/build-pages.js` — khung chung và nội dung của mọi trang; **đừng sửa trực tiếp các file `index.html`**,
   hãy sửa file này. Lúc triển khai, các trang luôn được dựng lại từ file này và `config.js`.
+
+## Tìm kiếm (SEO)
+
+- Mỗi trang có thẻ canonical, thẻ chia sẻ mạng xã hội (ảnh `site/assets/og.png`) và dữ liệu có cấu trúc;
+  `sitemap.xml` và `robots.txt` được sinh tự động khi dựng trang.
+- Địa chỉ trang lấy từ `SITE_URL` trong `scripts/build-pages.js`. **Khi chuyển sang tên miền riêng, sửa giá trị này.**
+- Xác minh Google Search Console: dán mã vào `googleSiteVerification` trong `site/assets/config.js`.
