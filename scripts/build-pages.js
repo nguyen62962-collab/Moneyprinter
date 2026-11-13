@@ -3,6 +3,7 @@
  * Chạy: npm run build. Kết quả được commit sẵn nên máy chủ không cần bước build. */
 "use strict";
 const fs = require("fs");
+const { articles } = require("./articles.js");
 const path = require("path");
 const out = path.join(__dirname, "..", "site");
 
@@ -29,7 +30,8 @@ const nav = [
   ["kha-nang-vay", "Khả năng vay"],
   ["lai-tiet-kiem", "Lãi tiết kiệm"],
   ["lai-kep", "Lãi kép"],
-  ["muc-tieu", "Mục tiêu"]
+  ["muc-tieu", "Mục tiêu"],
+  ["huong-dan", "Hướng dẫn"]
 ];
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
@@ -64,9 +66,19 @@ const prefsPanel = `<details class="prefs">
         </div>
       </details>`;
 
-function page({ dir, tool, title, desc, body, scripts = true }) {
-  const root = dir ? "../" : "./";
-  const links = nav.map(([d, t]) => `<a href="${root}${d}/"${d === dir ? ' aria-current="page"' : ""}>${t}</a>`).join("\n        ");
+const PUBLISHED = "2026-11-13";
+const bySlug = Object.fromEntries(articles.map((a) => [a.slug, a]));
+function articleList(slugs, root) {
+  return `<ul class="article-list">
+${slugs.map((slug) => { const a = bySlug[slug]; return `        <li><a href="${root}huong-dan/${a.slug}/"><strong>${esc(a.title)}</strong><small>${esc(a.desc)}</small></a></li>`; }).join("\n")}
+      </ul>`;
+}
+
+function page({ dir, tool, title, desc, body, scripts = true, ogType = "website", headExtra = "" }) {
+  const depth = dir ? dir.split("/").length : 0;
+  const root = depth ? "../".repeat(depth) : "./";
+  const section = dir.split("/")[0];
+  const links = nav.map(([d, t]) => `<a href="${root}${d}/"${d === section ? ' aria-current="page"' : ""}>${t}</a>`).join("\n        ");
   const html = `<!doctype html>
 <html lang="vi">
 <head>
@@ -76,12 +88,12 @@ function page({ dir, tool, title, desc, body, scripts = true }) {
   <meta name="description" content="${esc(desc)}">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(desc)}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="${ogType}">
   <meta property="og:locale" content="vi_VN">
   <meta name="theme-color" content="#0b7a4b">${adsHead}
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a4b'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'%3E%C4%91%3C/text%3E%3C/svg%3E">
   <script src="${root}assets/prefs.js"></script>
-  <link rel="stylesheet" href="${root}assets/style.css">
+  <link rel="stylesheet" href="${root}assets/style.css">${headExtra}
 </head>
 <body${tool ? ` data-tool="${tool}"` : ""}>
   <header class="site">
@@ -128,7 +140,7 @@ const chips = (items) => `      <div class="chips">
 ${items.map(([label, preset]) => `        <button type="button" class="chip" data-preset="${esc(JSON.stringify(preset))}">${label}</button>`).join("\n")}
       </div>`;
 
-function toolPage({ dir, tool, title, desc, h1, lead, presets, fields, extra = "", button, prose }) {
+function toolPage({ dir, tool, title, desc, h1, lead, presets, fields, extra = "", button, prose, related = [] }) {
   page({
     dir, tool, title, desc,
     body: `      <h1>${h1}</h1>
@@ -160,7 +172,11 @@ ${fields.join("\n")}
       <div class="offers" id="offers" hidden></div>
       <section class="prose">
 ${prose}
-      </section>`
+      </section>${related.length ? `
+      <section class="related">
+        <h2>Đọc thêm</h2>
+      ${articleList(related, "../")}
+      </section>` : ""}`
   });
 }
 
@@ -190,6 +206,9 @@ ${needs.map(([href, ico, t, s]) => `        <a class="card need" href="${esc(hre
         <h2>Kịch bản bạn đã lưu</h2>
         <ul id="saved-list"></ul>
       </section>
+      <h2>Hướng dẫn tài chính cá nhân</h2>
+      ${articleList(["goc-deu-hay-tra-deu", "vay-mua-nha-bao-nhieu-la-vua", "lai-don-va-lai-kep"], "./")}
+      <p><a href="./huong-dan/">Xem tất cả ${articles.length} bài hướng dẫn →</a></p>
       <h2>Vì sao dùng TínhTiền?</h2>
       <ul class="points">
         <li><strong>Riêng cho bạn</strong>Lưu nhiều phương án để so sánh, trang tự nhớ số liệu bạn nhập lần trước.</li>
@@ -202,7 +221,7 @@ ${needs.map(([href, ico, t, s]) => `        <a class="card need" href="${esc(hre
 
 /* ---------------- Các công cụ ---------------- */
 toolPage({
-  dir: "vay-tra-gop", tool: "loan",
+  dir: "vay-tra-gop", related: ["goc-deu-hay-tra-deu", "tra-no-truoc-han", "lai-suat-uu-dai-va-tha-noi"], tool: "loan",
   title: "Tính lãi vay trả góp — lịch trả nợ, trả nợ trước hạn | TínhTiền",
   desc: "Tính tiền trả góp hàng tháng, tổng lãi và lịch trả nợ chi tiết theo dư nợ giảm dần hoặc trả đều; xem trả thêm mỗi tháng tiết kiệm bao nhiêu lãi.",
   h1: "Tính lãi vay trả góp",
@@ -237,7 +256,7 @@ toolPage({
 });
 
 toolPage({
-  dir: "kha-nang-vay", tool: "afford",
+  dir: "kha-nang-vay", related: ["vay-mua-nha-bao-nhieu-la-vua", "lai-suat-uu-dai-va-tha-noi", "quy-du-phong"], tool: "afford",
   title: "Tính khả năng vay theo thu nhập — vay được tối đa bao nhiêu | TínhTiền",
   desc: "Ước tính số tiền vay tối đa dựa trên thu nhập hàng tháng, tỷ lệ thu nhập dành trả nợ, lãi suất và thời hạn vay.",
   h1: "Tôi vay được tối đa bao nhiêu?",
@@ -261,7 +280,7 @@ toolPage({
 });
 
 toolPage({
-  dir: "lai-tiet-kiem", tool: "savings",
+  dir: "lai-tiet-kiem", related: ["lai-suat-thuc", "quy-du-phong", "lai-don-va-lai-kep"], tool: "savings",
   title: "Tính lãi tiết kiệm ngân hàng theo kỳ hạn, có tái tục | TínhTiền",
   desc: "Tính tiền lãi gửi tiết kiệm nhận cuối kỳ theo số tiền gửi, lãi suất năm và kỳ hạn; hỗ trợ tái tục cả gốc lẫn lãi qua nhiều kỳ.",
   h1: "Tính lãi tiết kiệm",
@@ -284,7 +303,7 @@ toolPage({
 });
 
 toolPage({
-  dir: "lai-kep", tool: "compound",
+  dir: "lai-kep", related: ["lai-don-va-lai-kep", "lai-suat-thuc"], tool: "compound",
   title: "Tính lãi kép — đầu tư tích luỹ hàng tháng | TínhTiền",
   desc: "Công cụ tính lãi kép có biểu đồ: xem tài sản tăng trưởng theo từng năm khi có vốn ban đầu và góp thêm đều đặn hàng tháng.",
   h1: "Tính lãi kép",
@@ -307,7 +326,7 @@ toolPage({
 });
 
 toolPage({
-  dir: "muc-tieu", tool: "goal",
+  dir: "muc-tieu", related: ["quy-du-phong", "lai-don-va-lai-kep", "lai-suat-thuc"], tool: "goal",
   title: "Kế hoạch tiết kiệm theo mục tiêu — mỗi tháng cần để dành bao nhiêu | TínhTiền",
   desc: "Nhập số tiền mục tiêu và thời hạn để biết mỗi tháng cần để dành bao nhiêu, kèm biểu đồ lộ trình theo từng năm.",
   h1: "Mỗi tháng cần để dành bao nhiêu?",
@@ -348,4 +367,43 @@ page({
       </div>`
 });
 
-console.log("Đã sinh " + (nav.length + 2) + " trang vào site/" + (adsenseClient ? " (AdSense: " + adsenseClient + ", kèm ads.txt)" : " (chưa bật AdSense)"));
+page({
+  dir: "huong-dan",
+  title: "Hướng dẫn tài chính cá nhân: vay, trả nợ, tiết kiệm | TínhTiền",
+  desc: "Các bài hướng dẫn dễ hiểu về vay mua nhà, trả nợ trước hạn, lãi suất thả nổi, lãi kép, lạm phát và quỹ dự phòng — có ví dụ tính toán cụ thể.",
+  body: `      <h1>Hướng dẫn tài chính cá nhân</h1>
+      <p class="lead">Những kiến thức cơ bản giúp bạn vay đúng sức, trả nợ thông minh và tiết kiệm hiệu quả. Mỗi bài đều có ví dụ tính toán bằng chính công cụ của TínhTiền.</p>
+      ${articleList(articles.map((a) => a.slug), "../")}
+      <div class="offers" id="offers" hidden></div>`
+});
+
+articles.forEach((a, i) => {
+  const others = articles.filter((x) => x.slug !== a.slug);
+  const related = others.slice(i % others.length).concat(others.slice(0, i % others.length)).slice(0, 3).map((x) => x.slug);
+  const toolName = nav.find(([d]) => d === a.tool)[1];
+  const ld = JSON.stringify({
+    "@context": "https://schema.org", "@type": "Article", headline: a.title, description: a.desc,
+    inLanguage: "vi", datePublished: PUBLISHED, dateModified: PUBLISHED, author: { "@type": "Organization", name: "TínhTiền" }
+  }).replace(/</g, "\\u003c");
+  page({
+    dir: "huong-dan/" + a.slug,
+    ogType: "article",
+    title: a.title + " | TínhTiền",
+    desc: a.desc,
+    headExtra: `\n  <script type="application/ld+json">${ld}</script>`,
+    body: `      <nav class="crumbs" aria-label="Vị trí"><a href="../../">Trang chủ</a> › <a href="../">Hướng dẫn</a></nav>
+      <article class="prose article">
+        <h1>${a.title}</h1>
+        <p class="article-meta">Cập nhật ngày ${PUBLISHED.split("-").reverse().join("/")} · Công cụ liên quan: <a href="../../${a.tool}/">${toolName}</a></p>
+${a.body.trim().split("\n").map((l) => (l ? "        " + l : l)).join("\n")}
+        <p class="disclaimer">Bài viết chỉ nhằm cung cấp thông tin chung, không phải tư vấn tài chính. Số liệu trong ví dụ là giả định để minh hoạ; điều kiện thực tế tuỳ hợp đồng và chính sách của từng tổ chức.</p>
+      </article>
+      <div class="offers" id="offers" hidden></div>
+      <section class="related">
+        <h2>Bài viết khác</h2>
+      ${articleList(related, "../../")}
+      </section>`
+  });
+});
+
+console.log("Đã sinh " + (nav.length + 2 + articles.length) + " trang vào site/" + (adsenseClient ? " (AdSense: " + adsenseClient + ", kèm ads.txt)" : " (chưa bật AdSense)"));

@@ -193,3 +193,37 @@ footer.site p { margin: 0 0 6px; }
   .table-scroll { max-height: none; overflow: visible; }
   .card { border-color: #ccc; }
 }
+
+/* ---- Bài hướng dẫn ---- */
+.article-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.article-list a {
+  display: block; text-decoration: none; color: inherit; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; transition: border-color .15s;
+}
+.article-list a:hover { border-color: var(--accent); }
+.article-list strong { display: block; color: var(--accent); line-height: 1.4; }
+.article-list small { display: block; color: var(--muted); font-size: .88rem; margin-top: 4px; }
+.related { margin-top: 36px; }
+.crumbs { font-size: .85rem; color: var(--muted); margin-bottom: 10px; }
+.crumbs a { color: var(--muted); }
+.article h1 { margin-bottom: 6px; }
+.article-meta { color: var(--muted); font-size: .88rem; margin: 0 0 22px; }
+.article h2 { margin-top: 30px; }
+.article li { margin-bottom: 6px; }
+.article .table-scroll { max-height: none; margin: 14px 0; }
+.article th, .article td:first-child { white-space: normal; }
+.article th { vertical-align: bottom; }
+@media (max-width: 520px) {
+  .article table { font-size: .8rem; }
+  .article th, .article td { padding: 7px 6px; }
+  .article td:first-child { min-width: 6.5em; }
+}
+.article .formula code { display: inline-block; padding: 6px 10px; white-space: normal; }
+.cta { margin: 18px 0; }
+.cta .primary-link {
+  display: inline-block; text-decoration: none; font-weight: 600; padding: 10px 16px; border-radius: 8px;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent);
+}
+.cta .primary-link:hover { background: var(--accent); color: var(--accent-ink); }
+.disclaimer { margin-top: 30px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+@media print { .related, .crumbs, .cta { display: none !important; } .article .prose, .article { display: block !important; } }

@@ -39,5 +39,6 @@ python3 -m http.server --directory site   # xem thử tại http://localhost:800
 - `site/assets/app.js` — biểu mẫu, biểu đồ, kịch bản đã lưu, quảng cáo và liên kết tiếp thị.
 - `site/assets/prefs.js`, `style.css` — tuỳ chỉnh giao diện của người dùng.
 - `site/assets/config.js` — nơi duy nhất cần sửa để bật kiếm tiền.
+- `scripts/articles.js` — nội dung các bài hướng dẫn; số liệu ví dụ được tính bằng `calc.js` lúc dựng trang, không gõ tay.
 - `scripts/build-pages.js` — khung chung và nội dung của mọi trang; **đừng sửa trực tiếp các file `index.html`**,
   hãy sửa file này. Lúc triển khai, các trang luôn được dựng lại từ file này và `config.js`.
